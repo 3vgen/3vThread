@@ -1,0 +1,32 @@
+[project]
+name = "3vgthread"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Evgeniy Semin"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy (<2)",
+    "psycopg2 (>=2.9.10,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "fastapi-jwt (>=0.3.0,<0.4.0)",
+    "uvicorn (>=0.37.0,<0.38.0)",
+    "sqlalchemy (>=2.0.43,<3.0.0)",
+    "asyncpg (>=0.30.0,<0.31.0)",
+    "python-multipart (>=0.0.20,<0.0.21)",
+    "greenlet (>=3.2.4,<4.0.0)",
+    "alembic (>=1.16.5,<2.0.0)",
+    "black (>=25.9.0,<26.0.0)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "passlib (>=1.7.4,<2.0.0)",
+    "python-jose (>=3.5.0,<4.0.0)",
+    "bcrypt (==3.2.2)",
+    "pydantic[email] (>=2.12.3,<3.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
