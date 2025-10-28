@@ -11,6 +11,7 @@ class AuthUser(Base):
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(default=True)
+    role: Mapped[str] = mapped_column(String(20), default="user")
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     profile = relationship("User", back_populates="user", uselist=False)

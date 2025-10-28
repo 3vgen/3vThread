@@ -33,6 +33,14 @@ async def get_current_user(
     user = result.scalar_one_or_none()
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
+
+    user.role = payload.get("role", "user")
+    return user
+
+
+def require_admin(user: AuthUser = Depends(get_current_user)):
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     return user
 
 
@@ -78,7 +86,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     if not db_user or not verify_password(form_data.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": db_user.email})
+    token = create_access_token({"sub": db_user.email, "role": db_user.role})
     return {"access_token": token, "token_type": "bearer"}
 
 
@@ -88,3 +96,9 @@ async def get_me(current_user: AuthUser = Depends(get_current_user)):
         "email": current_user.email,
         "username": current_user.profile.username if current_user.profile else None,
     }
+
+
+@router.get("/users", response_model=list[UserOut])
+async def get_all_users(current_user: AuthUser = Depends(require_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(AuthUser).options(selectinload(AuthUser.profile)))
+    return result.scalars().all()

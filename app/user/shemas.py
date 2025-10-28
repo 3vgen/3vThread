@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 from datetime import datetime
 
 
@@ -17,10 +18,15 @@ class UserLogin(UserBase):
     password: str
 
 
+class UserProfileOut(BaseModel):
+    username: Optional[str]
+
+
 class UserOut(UserBase):
-    username: str
-    id: int
+    email: str
+    is_active: bool
     created_at: datetime
+    profile: Optional[UserProfileOut]
 
     class Config:
         from_attributes = True

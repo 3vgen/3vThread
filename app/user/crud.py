@@ -10,7 +10,7 @@ from app.user.jwt_auth import decode_token
 from app.db.connection import get_db
 
 
-async def create_user(db: AsyncSession, name: str, email:str) -> User:
+async def create_user(db: AsyncSession, name: str, email: str) -> User:
     user = User(name=name, email=email)
     db.add(user)
     await db.commit()
