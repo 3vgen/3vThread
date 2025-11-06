@@ -12,7 +12,7 @@ from app.user.model import AuthUser, User
 from app.user.auth_util import hash_password, verify_password
 from app.user.jwt_auth import create_access_token, decode_token
 from fastapi.security import OAuth2PasswordRequestForm
-
+# from app.token.require import get_current_user, require_admin
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -69,15 +69,6 @@ async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/login")
-# async def login(user: UserLogin, db: AsyncSession = Depends(get_db)):
-#     result = await db.execute(select(AuthUser).where(AuthUser.email == user.email))
-#     db_user = result.scalar_one_or_none()
-#
-#     if not db_user or not verify_password(user.password, db_user.hashed_password):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-#
-#     token = create_access_token({"sub": db_user.email})
-#     return {"access_token": token, "token_type": "bearer"}
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     # form_data.username — это email
     result = await db.execute(select(AuthUser).where(AuthUser.email == form_data.username))
@@ -98,7 +89,14 @@ async def get_me(current_user: AuthUser = Depends(get_current_user)):
     }
 
 
+# @router.get("/users", response_model=list[UserOut])
+# async def get_all_users(current_user: AuthUser = Depends(require_admin), db: AsyncSession = Depends(get_db)):
+#     result = await db.execute(select(AuthUser).options(selectinload(AuthUser.profile)))
+#     return result.scalars().all()
+
+
+# Временно без авторизации для дебага
 @router.get("/users", response_model=list[UserOut])
-async def get_all_users(current_user: AuthUser = Depends(require_admin), db: AsyncSession = Depends(get_db)):
+async def get_all_users(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(AuthUser).options(selectinload(AuthUser.profile)))
     return result.scalars().all()

@@ -1,4 +1,5 @@
 from sqlalchemy import String, Boolean, ForeignKey, DateTime
+from app.thread.model import Thread
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from app.db.base import Base
@@ -27,3 +28,5 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     user = relationship("AuthUser", back_populates="profile")
+    thread = relationship("Thread", back_populates="profile")
+

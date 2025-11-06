@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from app.db.connection import engine
 from app.db.base import Base
 from app.user.routers import router as user_router
+from app.thread.routers import router as thread_router
+
 from contextlib import asynccontextmanager
 
 
@@ -19,6 +21,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="test", lifespan=lifespan)
 app.include_router(user_router, prefix="/auth", tags=["API"])
+app.include_router(thread_router, prefix="/thread", tags=["API"])
 
 
 if __name__ == '__main__':
