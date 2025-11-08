@@ -1,13 +1,6 @@
-from typing import Any, Sequence
-from fastapi import Depends
-from sqlalchemy import Row, RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.future import select
 from app.thread.model import Thread
-from fastapi.security import OAuth2PasswordBearer
-from app.user.jwt_auth import decode_token
-from app.db.connection import get_db
 
 
 async def create_thread(db: AsyncSession, name: str, email: str) -> Thread:
@@ -16,3 +9,13 @@ async def create_thread(db: AsyncSession, name: str, email: str) -> Thread:
     await db.commit()
     await db.refresh(thread)
     return thread
+
+
+async def get_thread(db: AsyncSession, thread_id: int) -> Thread:
+    result = await db.execute(select(Thread).filter(Thread.id == thread_id))
+    return result.scalars().first()
+
+
+async def delete_thread(db: AsyncSession, thread: Thread):
+    await db.delete(thread)
+    await db.commit()
