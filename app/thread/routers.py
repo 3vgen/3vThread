@@ -14,6 +14,7 @@ from app.user.auth_util import hash_password, verify_password
 from app.user.jwt_auth import create_access_token, decode_token
 from fastapi.security import OAuth2PasswordRequestForm
 from app.user.routers import get_current_user
+from app.thread.crud import get_thread, delete_thread
 
 router = APIRouter()
 
@@ -31,3 +32,17 @@ async def create_thread_endpoint(thread: ThreadCreate, current_user: AuthUser = 
         "text": new_thread.text,
         "created_at": new_thread.created_at,
     }
+
+
+@router.delete("/delete/{thread_id}")
+async def delete_thread_endpoint(thread_id: int, current_user: AuthUser = Depends(get_current_user),
+                                 db: AsyncSession = Depends(get_db)):
+    thread = await get_thread(db, thread_id)
+
+    if not thread:
+        return HTTPException(status_code=404, detail="Пост не найден")
+
+    await delete_thread(db, thread)
+    return {"message": "Пост удален"}
+
+
